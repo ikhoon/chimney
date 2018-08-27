@@ -70,7 +70,8 @@ lazy val chimney = crossProject(JSPlatform, JVMPlatform)
   .settings(
     moduleName := "chimney",
     name := "chimney",
-    description := "Scala library for boilerplate free data rewriting"
+    description := "Scala library for boilerplate free data rewriting",
+    scroogeLanguages in Compile := Seq("scala")
   )
   .settings(settings: _*)
   .settings(publishSettings: _*)
@@ -78,6 +79,12 @@ lazy val chimney = crossProject(JSPlatform, JVMPlatform)
   .dependsOn(protos % "test->compile")
 
 lazy val chimneyJVM = chimney.jvm
+  .settings(
+    libraryDependencies ++= Seq(
+      "com.twitter" %% "scrooge-core" % "18.8.0",
+      "com.twitter" %% "finagle-thrift" % "18.8.0"
+    )
+  )
 lazy val chimneyJS = chimney.js
 
 lazy val protos = crossProject(JSPlatform, JVMPlatform)

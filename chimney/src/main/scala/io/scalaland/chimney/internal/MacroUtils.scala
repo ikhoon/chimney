@@ -20,15 +20,31 @@ trait MacroUtils extends CompanionUtils {
       t.typeSymbol.classSymbolOpt.exists(_.isSealed)
 
     def caseClassParams: Iterable[MethodSymbol] = {
+      val companionApply = t.companion.decl(TermName("apply"))
+      val companionApplyParams =
+        if (companionApply.isMethod)
+          companionApply.asMethod.paramLists.head.map(_.asTerm.name)
+        else Nil
       t.decls.collect {
-        case m: MethodSymbol if m.isCaseAccessor || (isValueClass && m.isParamAccessor) =>
+        case m: MethodSymbol if m.isCaseAccessor || (isValueClass && m.isParamAccessor) || companionApplyParams.contains(m.name)=>
           m.asMethod
       }
     }
 
+    def isScrooge = {
+      val baseNames = t.baseClasses.tail.map(_.fullName)
+      baseNames.contains("com.twitter.scrooge.ThriftStruct")
+    }
+
     def getterMethods: Iterable[MethodSymbol] = {
+      val companionApply = t.companion.decl(TermName("apply"))
+      val companionApplyParams =
+        if (companionApply.isMethod)
+          companionApply.asMethod.paramLists.head.map(_.asTerm.name)
+        else Nil
+      println(companionApplyParams)
       t.decls.collect {
-        case m: MethodSymbol if m.isGetter || ((m.paramLists.isEmpty || m.paramLists == List(List())) && m.isPublic) =>
+        case m: MethodSymbol if m.isGetter || ((m.paramLists.isEmpty || m.paramLists == List(List())) && m.isPublic) || companionApplyParams.contains(m.name)=>
           m.asMethod
       }
     }

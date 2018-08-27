@@ -38,7 +38,7 @@ trait DerivationGuards {
   }
 
   def destinationCaseClass(to: Type): Boolean = {
-    to.isCaseClass
+    to.isCaseClass || to.isScrooge
   }
 
   def bothSealedClasses(from: Type, to: Type): Boolean = {

@@ -308,6 +308,7 @@ trait TransformerMacros {
 
     var errors = Seq.empty[DerivationError]
 
+
     val fromFields = From.getterMethods
     val toFields = To.caseClassParams
 
@@ -363,7 +364,17 @@ trait TransformerMacros {
     if (errors.nonEmpty) {
       Left(errors)
     } else {
-      Right(q"new $To(..$args)")
+      if(To.isScrooge) {
+
+        val companionApply = To.companion.decl(TermName("apply")).asMethod
+        val memberSize = companionApply.paramLists.head.size
+        val elementNames = (1 to memberSize).map(i => TermName(s"e$i"))
+
+        Right(q"$companionApply(..$args)")
+      }
+      else {
+        Right(q"new $To(..$args)")
+      }
     }
   }
 
@@ -397,6 +408,7 @@ trait TransformerMacros {
         }
       }
     } else {
+      println(targetCaseClass + " " + fromParams)
       fromParams
         .find(_.name == targetField.name)
         .map { ms =>
