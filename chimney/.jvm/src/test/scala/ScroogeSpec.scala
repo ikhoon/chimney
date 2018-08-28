@@ -1,5 +1,5 @@
 import org.scalatest.{FunSuite, Matchers}
-import turorial.thriftscala.TPerson
+import turorial.thriftscala.{TApple, TFruit, TPerson}
 
 /**
   * Created by Liam.M on 2018. 08. 27..
@@ -25,7 +25,7 @@ class ScroogeSpec extends FunSuite with Matchers {
     println(symbols)
   }
 
-  test("scrooge reflection") {
+  test("scrooge to case class") {
     val tperson = TPerson("TTT1", 10000, "tttt@mail")
     tperson.temail
     println(tperson.transformInto[SPerson])
@@ -34,5 +34,15 @@ class ScroogeSpec extends FunSuite with Matchers {
   test("case class to Thrift") {
     val sperson = SPerson("SSS1", 20000, "temail@mail")
     println(sperson.transformInto[TPerson])
+  }
+
+  sealed trait Fruit
+  case class Orange(a: Boolean) extends Fruit
+  case class Apple(a: Int, b: String) extends Fruit
+  test("adt to union") {
+    val fruit: TFruit = TFruit.Apple(TApple(10, Some("hello")))
+    val apple: TApple = TApple(10, Some("hello"))
+
+    fruit.transformInto[Fruit]
   }
 }

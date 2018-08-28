@@ -17,3 +17,17 @@ struct TPerson {
     2: i32 tid;
     3: string temail;
 }
+
+struct TApple {
+  1: required i32 a
+  2: optional string b
+}
+
+struct TOrange {
+  1: required bool a
+}
+
+union TFruit {
+  1: TApple apple
+  2: TOrange orange
+}
