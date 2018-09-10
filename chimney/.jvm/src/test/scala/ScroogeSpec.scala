@@ -4,6 +4,18 @@ import turorial.thriftscala.{TApple, TFruit, TPerson}
 /**
   * Created by Liam.M on 2018. 08. 27..
   */
+
+sealed trait Fruit
+object Fruit {
+  case class Orange(a: Boolean) extends Fruit
+  case class Apple(a: Int, b: String) extends Fruit
+}
+
+sealed trait Fruit1
+object Fruit1 {
+  case class Orange(a: Boolean) extends Fruit1
+  case class Apple(a: Int, b: String) extends Fruit1
+}
 class ScroogeSpec extends FunSuite with Matchers {
 
   import io.scalaland.chimney.dsl._
@@ -36,13 +48,16 @@ class ScroogeSpec extends FunSuite with Matchers {
     println(sperson.transformInto[TPerson])
   }
 
-  sealed trait Fruit
-  case class Orange(a: Boolean) extends Fruit
-  case class Apple(a: Int, b: String) extends Fruit
+
+  test("coproduct to coproduct") {
+    val fruit: Fruit = Fruit.Orange(true)
+    println(fruit.transformInto[Fruit1])
+  }
+
   test("adt to union") {
     val fruit: TFruit = TFruit.Apple(TApple(10, Some("hello")))
     val apple: TApple = TApple(10, Some("hello"))
-
-    fruit.transformInto[Fruit]
+    
+    apple.transformInto[Fruit]
   }
 }

@@ -226,6 +226,7 @@ trait TransformerMacros {
 
     if (config.coproductInstances.contains((From.typeSymbol, To))) {
 
+      println("config coproduct instance contains")
       val instFullName = From.typeSymbol.fullName.toString
       val fullTargetName = To.typeSymbol.fullName.toString
 
@@ -408,7 +409,6 @@ trait TransformerMacros {
         }
       }
     } else {
-      println(targetCaseClass + " " + fromParams)
       fromParams
         .find(_.name == targetField.name)
         .map { ms =>
