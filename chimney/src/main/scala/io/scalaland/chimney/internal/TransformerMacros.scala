@@ -243,11 +243,14 @@ trait TransformerMacros {
 
       val targetNamedInstances = toInstances.map(s => s.name.toString -> s).toMap
 
+      println(s"from ${fromInstances}, to ${toInstances}, target ${targetNamedInstances}")
       val instanceClauses = fromInstances.toSeq.map { instSymbol =>
         instSymbol.typeSignature // Workaround for <https://issues.scala-lang.org/browse/SI-7755>
         val instName = instSymbol.name.toString
         targetNamedInstances.get(instName) match {
           case Some(matchingTargetSymbol) =>
+            println(s"maatched ${matchingTargetSymbol}")
+            println(s"ins module ${instSymbol.isModuleClass} case ${instSymbol.isCaseClass} matching module ${matchingTargetSymbol.isModuleClass} case ${matchingTargetSymbol.isCaseClass}")
             if ((instSymbol.isModuleClass || instSymbol.isCaseClass) && matchingTargetSymbol.isModuleClass) {
               Right(cq"_: ${instSymbol.asType} => ${matchingTargetSymbol.asClass.module}")
             } else if (instSymbol.isCaseClass && matchingTargetSymbol.isCaseClass) {
@@ -256,6 +259,8 @@ trait TransformerMacros {
               val instTpe = instSymbol.asType.toType
               val targetTpe = matchingTargetSymbol.asType.toType
 
+              println(s"inst fn : $fn ${config.rec} instTpe ${instTpe} targetTpe ${targetTpe}")
+              println(s"expandcase class ${expandDestinationCaseClass(Ident(fn), config.rec)(instTpe, targetTpe)}")
               expandDestinationCaseClass(Ident(fn), config.rec)(instTpe, targetTpe).right.map { innerTransformerTree =>
                 cq"$fn: ${instSymbol.asType} => $innerTransformerTree"
               }
@@ -313,9 +318,11 @@ trait TransformerMacros {
     val fromFields = From.getterMethods
     val toFields = To.caseClassParams
 
+    println(s"field from ${From} ${fromFields} to ${To} ${toFields}")
     val mapping = toFields.map { targetField =>
       targetField -> resolveField(srcPrefixTree, config, From, To)(targetField, fromFields, To.typeSymbol.asClass)
     }
+    println(s"mapping ${mapping}")
 
     val missingFields = mapping.collect { case (field, None) => field }
 

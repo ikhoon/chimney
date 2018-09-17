@@ -25,6 +25,7 @@ trait MacroUtils extends CompanionUtils {
         if (companionApply.isMethod)
           companionApply.asMethod.paramLists.head.map(_.asTerm.name)
         else Nil
+      println(s"t : ${t} companionApplyParams = ${companionApplyParams}")
       t.decls.collect {
         case m: MethodSymbol if m.isCaseAccessor || (isValueClass && m.isParamAccessor) || companionApplyParams.contains(m.name)=>
           m.asMethod
@@ -42,6 +43,21 @@ trait MacroUtils extends CompanionUtils {
         if (companionApply.isMethod)
           companionApply.asMethod.paramLists.head.map(_.asTerm.name)
         else Nil
+      println(s"getterMethods t : ${t} companionApplyParams = ${companionApplyParams}")
+      println(s"companion.decls ${t.companion.decls}")
+      println(s"t.decls ${t.decls}")
+      val syms = t.companion
+        .decls
+        .collect {
+          case sym if sym.isClass && sym.asClass.isCaseClass => sym.asClass
+        }
+        .map { sym =>
+          (            sym.companion.name.toTermName,
+            sym.primaryConstructor.asMethod.paramLists.head.head.asTerm.info.dealias,
+              sym.name)
+
+        }
+      println(s"syms ${syms}")
       t.decls.collect {
         case m: MethodSymbol if m.isGetter || ((m.paramLists.isEmpty || m.paramLists == List(List())) && m.isPublic) || companionApplyParams.contains(m.name)=>
           m.asMethod
