@@ -226,7 +226,7 @@ trait TransformerMacros {
 
     if (config.coproductInstances.contains((From.typeSymbol, To))) {
 
-      println("config coproduct instance contains")
+      println(s"config coproduct instance contains From $From, To $To")
       val instFullName = From.typeSymbol.fullName.toString
       val fullTargetName = To.typeSymbol.fullName.toString
 
@@ -241,6 +241,7 @@ trait TransformerMacros {
       val fromInstances = fromCS.knownDirectSubclasses
       val toInstances = toCS.knownDirectSubclasses
 
+      println(s"fromCS $fromCS fromInstances $fromInstances toCS $toCS toInstances $toInstances")
       val targetNamedInstances = toInstances.map(s => s.name.toString -> s).toMap
 
       println(s"from ${fromInstances}, to ${toInstances}, target ${targetNamedInstances}")
@@ -249,7 +250,7 @@ trait TransformerMacros {
         val instName = instSymbol.name.toString
         targetNamedInstances.get(instName) match {
           case Some(matchingTargetSymbol) =>
-            println(s"maatched ${matchingTargetSymbol}")
+            println(s"matched ${matchingTargetSymbol}")
             println(s"ins module ${instSymbol.isModuleClass} case ${instSymbol.isCaseClass} matching module ${matchingTargetSymbol.isModuleClass} case ${matchingTargetSymbol.isCaseClass}")
             if ((instSymbol.isModuleClass || instSymbol.isCaseClass) && matchingTargetSymbol.isModuleClass) {
               Right(cq"_: ${instSymbol.asType} => ${matchingTargetSymbol.asClass.module}")

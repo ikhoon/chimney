@@ -28,6 +28,11 @@ struct TOrange {
 }
 
 union TFruit {
+<<<<<<< Updated upstream
   1: TApple app
   2: TOrange ora
+=======
+  1: TOrange orange1
+  2: TApple apple2
+>>>>>>> Stashed changes
 }

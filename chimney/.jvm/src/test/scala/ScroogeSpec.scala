@@ -7,8 +7,8 @@ import turorial.thriftscala.{TApple, TFruit, TOrange, TPerson}
 
 sealed trait Fruit
 object Fruit {
-  case class Orange(a: Boolean) extends Fruit
-  case class Apple(a: Int, b: String) extends Fruit
+  case class Orange1(a: Boolean) extends Fruit
+  case class Apple2(a: Int, b: String) extends Fruit
 }
 
 sealed trait Fruit1
@@ -59,12 +59,15 @@ class ScroogeSpec extends FunSuite with Matchers {
   */
 
   test("adt to union") {
-    val tfruit: TFruit = TFruit.Apple(TApple(10, Some("hello")))
-    val torange: TFruit = TFruit.Orange(TOrange(true))
+    val tfruit: TFruit = TFruit.Apple2(TApple(10, Some("hello")))
+    val torange: TFruit = TFruit.Orange1(TOrange(true))
 
-    val fruit = tfruit.into[Fruit]
-      .withCoproductInstance { (_: TFruit.UnknownUnionField) => Fruit.Orange(true)}
+    val fruit = tfruit
+      .into[Fruit]
+      .withCoproductInstance { (_: TFruit.UnknownUnionField) => Fruit.Orange1(true)
+      }
       .transform
     println(fruit)
   }
+
 }
