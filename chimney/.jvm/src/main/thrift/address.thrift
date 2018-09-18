@@ -28,6 +28,6 @@ struct TOrange {
 }
 
 union TFruit {
-  1: TApple apple
-  2: TOrange orange
+  1: TApple app
+  2: TOrange ora
 }

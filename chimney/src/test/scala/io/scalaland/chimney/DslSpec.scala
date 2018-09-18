@@ -6,6 +6,7 @@ import io.scalaland.chimney.examples._
 
 class DslSpec extends WordSpec with MustMatchers {
 
+  /**
   "A Chimney DSL" should {
 
     "use implicit transformer directly" in {
@@ -671,6 +672,7 @@ class DslSpec extends WordSpec with MustMatchers {
     }
 
   }
+  */
 }
 
 object Domain1 {

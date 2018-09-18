@@ -42,7 +42,8 @@ trait DerivationGuards {
   }
 
   def bothSealedClasses(from: Type, to: Type): Boolean = {
-    println(s"sealed case class from $from to $to")
+    println(s"sealed case class from $from ${from.isSealedClass}, to $to ${to.isSealedClass}")
+    println(s"type symbol from ${from.typeSymbol} ${to.typeSymbol}")
     from.isSealedClass && to.isSealedClass
   }
 
