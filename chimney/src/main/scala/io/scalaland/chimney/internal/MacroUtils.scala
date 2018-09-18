@@ -42,8 +42,9 @@ trait MacroUtils extends CompanionUtils {
         if (companionApply.isMethod)
           companionApply.asMethod.paramLists.head.map(_.asTerm.name)
         else Nil
+      def isParameterless(m: MethodSymbol) = m.paramLists.isEmpty || m.paramLists == List(List())
       t.decls.collect {
-        case m: MethodSymbol if m.isGetter || ((m.paramLists.isEmpty || m.paramLists == List(List())) && m.isPublic) || companionApplyParams.contains(m.name)=>
+        case m: MethodSymbol if m.isPublic && (m.isGetter || isParameterless(m)) || companionApplyParams.contains(m.name)=>
           m.asMethod
       }
     }
